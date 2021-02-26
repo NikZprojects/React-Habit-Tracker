@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 
-export const HabitTracker = () => {
-  const [habit, addHabit] = React.useState("");
+export const AddHabit = ({ habitList, setHabitList }) => {
+  const [userInput, setUserInput] = useState("");
 
   const handleChange = (e) => {
-    addHabit(e.target.value);
+    setUserInput(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addHabit(habit);
-    addHabit("");
+    setHabitList([
+      { id: uuid(), name: userInput, complete: false },
+      ...habitList,
+    ]);
+    setUserInput("");
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <input
-          value={habit}
+          value={userInput}
           type="text"
           placeholder="Add a habit..."
           onChange={handleChange}
