@@ -14,6 +14,7 @@ export const AddHabit = ({ habitList, setHabitList }) => {
       { id: uuid(), name: userInput, complete: false },
       ...habitList,
     ]);
+    console.log(habitList);
     setUserInput("");
   };
 
