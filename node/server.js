@@ -8,7 +8,6 @@ const host = "localhost";
 
 const writeJSON = (data, item, path) => {
   data.push(JSON.parse(item));
-  console.log(data);
   fs.writeFile(path, JSON.stringify(data), (err) => {
     if (err) {
       throw err;
@@ -17,7 +16,16 @@ const writeJSON = (data, item, path) => {
 };
 
 const requestListener = (req, res) => {
-  const path = "../src/data.json";
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+    'Access-Control-Max-Age': 2592000, // 30 days
+    'Content-Type': 'application/json',
+  };
+
+  const path = "./data.json";
   fs.readFile(path, "utf-8")
     .then((data) => {
       if (req.method === "POST") {
@@ -25,8 +33,8 @@ const requestListener = (req, res) => {
           writeJSON(JSON.parse(data), item.toString("utf-8"), path)
         );
       }
-      res.setHeader("Content-Type", "application/json");
-      res.writeHead(200);
+      //res.setHeader(headers);
+      res.writeHead(200, headers);
       res.write(data);
       res.end();
     })
