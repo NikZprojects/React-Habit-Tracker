@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { getData } from "./components/GetData"
+import { getData, setData } from "./components/GetData"
 import { AddHabit } from "./components/AddHabit";
 import { HabitList } from "./components/HabitList";
 
@@ -8,6 +8,9 @@ function App() {
   const [habitList, setHabitList] = useState([]);
 
   useEffect(() => {
+  if (habitList.length > 0) {
+    setData(habitList)
+  } else {
     let mounted = true
     getData()
       .then(data => {
@@ -15,14 +18,15 @@ function App() {
           setHabitList(data)
         }
       })
-      return () => mounted = false;
-  }, [])
+      return () => mounted = false};
+  }, [habitList])
 
   const handleToggle = (id) => {
     setHabitList(
       habitList.map((habit) => {
         if (habit.id.toString() === id) {
-          return { ...habit, complete: !habit.complete };
+          habit = { ...habit, complete: !habit.complete }
+          return habit;
         } else {
           return { ...habit };
         }

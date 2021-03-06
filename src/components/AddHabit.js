@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
-import { setData } from "./GetData"
 
 export const AddHabit = ({ habitList, setHabitList }) => {
   const [userInput, setUserInput] = useState("");
@@ -12,7 +11,6 @@ export const AddHabit = ({ habitList, setHabitList }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let newHabit = { id: uuid(), name: userInput, complete: false }
-    setData(newHabit);
     setHabitList([...habitList, newHabit])
     setUserInput("");
   };
