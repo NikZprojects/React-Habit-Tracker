@@ -6,9 +6,8 @@ const fs = require("fs").promises;
 const port = 8000;
 const host = "localhost";
 
-const writeJSON = (data, item, path) => {
-  data.push(JSON.parse(item));
-  fs.writeFile(path, JSON.stringify(data), (err) => {
+const writeJSON = (data, newData, path) => {
+  fs.writeFile(path, newData, (err) => {
     if (err) {
       throw err;
     }
@@ -29,8 +28,8 @@ const requestListener = (req, res) => {
   fs.readFile(path, "utf-8")
     .then((data) => {
       if (req.method === "POST") {
-        req.on("data", (item) =>
-          writeJSON(JSON.parse(data), item.toString("utf-8"), path)
+        req.on("data", (newData) =>
+          writeJSON(JSON.parse(data), newData, path)
         );
       }
       //res.setHeader(headers);
