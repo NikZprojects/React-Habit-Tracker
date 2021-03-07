@@ -10,7 +10,18 @@ export const AddHabit = ({ habitList, setHabitList }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let newHabit = { id: uuid(), name: userInput, complete: false };
+    const days = [...Array(31).keys()];
+    const listStatus = days.map((day) => ({
+      day: day,
+      complete: false,
+    }));
+    let newHabit = {
+      id: uuid(),
+      name: userInput,
+      complete: false,
+      month: { listStatus },
+    };
+    console.log(newHabit);
     setHabitList([...habitList, newHabit]);
     setUserInput("");
   };

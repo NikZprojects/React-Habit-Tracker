@@ -17,6 +17,8 @@ const writeJSON = (data, newData, path) => {
 const requestListener = (req, res) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Cross-Origin-Opener-Policy": "same-origin",
     "Access-Control-Allow-Headers": "*",
     "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
     "Access-Control-Max-Age": 2592000, // 30 days

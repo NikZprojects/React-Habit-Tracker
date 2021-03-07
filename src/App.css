@@ -59,3 +59,7 @@ table tr {
 input {
   text-align: center;
 }
+
+.AddHabit {
+  float: center;
+}
