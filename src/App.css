@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
+  border: 1px solid black;
+}
+table td {
+  border: 2px solid black;
+  text-align: center;
+  justify-content: center;
+}
+table th {
+  border: 2px solid black;
+  justify-content: center;
+}
+table tr {
+  border: 2px solid black;
+  justify-content: center;
+}
+input {
+  text-align: center;
+}
