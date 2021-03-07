@@ -10,8 +10,8 @@ export const AddHabit = ({ habitList, setHabitList }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let newHabit = { id: uuid(), name: userInput, complete: false }
-    setHabitList([...habitList, newHabit])
+    let newHabit = { id: uuid(), name: userInput, complete: false };
+    setHabitList([...habitList, newHabit]);
     setUserInput("");
   };
 
@@ -24,7 +24,6 @@ export const AddHabit = ({ habitList, setHabitList }) => {
           placeholder="Add a habit..."
           onChange={handleChange}
         />
-        <button onClick={handleSubmit}>Add Habit</button>
       </form>
     </div>
   );

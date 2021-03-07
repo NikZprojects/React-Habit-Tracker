@@ -7,16 +7,14 @@ export const Habit = ({ habit, handleToggle }) => {
   };
 
   return (
-    <div>
-      <div
-        onClick={handleClick}
-        id={habit.id}
-        key={habit.id}
-        style={{ habit }}
-        className={habit.complete ? "habit + strike" : "habit"}
-      >
-        {habit.name}
-      </div>
-    </div>
+    <th
+      onClick={handleClick}
+      id={habit.id}
+      key={habit.id}
+      style={{ habit }}
+      className={habit.complete ? "habit + strike" : "habit"}
+    >
+      {habit.name}
+    </th>
   );
 };

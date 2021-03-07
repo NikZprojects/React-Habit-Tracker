@@ -15,24 +15,20 @@ const writeJSON = (data, newData, path) => {
 };
 
 const requestListener = (req, res) => {
-
   const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
-    'Access-Control-Max-Age': 2592000, // 30 days
-    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+    "Access-Control-Max-Age": 2592000, // 30 days
+    "Content-Type": "application/json",
   };
 
   const path = "./data.json";
   fs.readFile(path, "utf-8")
     .then((data) => {
       if (req.method === "POST") {
-        req.on("data", (newData) =>
-          writeJSON(JSON.parse(data), newData, path)
-        );
+        req.on("data", (newData) => writeJSON(JSON.parse(data), newData, path));
       }
-      //res.setHeader(headers);
       res.writeHead(200, headers);
       res.write(data);
       res.end();
