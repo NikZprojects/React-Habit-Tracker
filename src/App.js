@@ -9,7 +9,7 @@ function App() {
   const [habitList, setHabitList] = useState([]);
 
   useEffect(() => {
-    if (habitList.length > 0) {
+    if (habitList.length >= 0) {
       setData(habitList);
     } else {
       let mounted = true;
@@ -46,11 +46,17 @@ function App() {
   return (
     <div className="App">
       <h1>March 2021</h1>
-      <div>{`\n`}</div>
       <h3>
         Add a habit:
         <AddHabit habitList={habitList} setHabitList={setHabitList} />
       </h3>
+      {habitList.some((habit) => habit.complete) ? (
+        <div>
+          <button onClick={handleDelete}>Delete habit?</button>
+        </div>
+      ) : (
+        ""
+      )}
       <table>
         <thead>
           <tr>
@@ -62,7 +68,6 @@ function App() {
           <WeeklyChecklist habitList={habitList} setHabitList={setHabitList} />
         </tbody>
       </table>
-      <button onClick={handleDelete}>Delete crossed off habits</button>
     </div>
   );
 }
