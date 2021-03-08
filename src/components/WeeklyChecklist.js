@@ -4,10 +4,8 @@ const handleChange = (id, day, habitList, setHabitList) => {
   setHabitList(
     habitList.map((habit) => {
       if (habit.id.toString() === id) {
-        habit = {
-          ...habit,
-        };
-        return habit;
+        habit.month[day].complete = !habit.month[day].complete;
+        return { ...habit };
       } else {
         return { ...habit };
       }
@@ -23,7 +21,7 @@ const listCheckboxes = (habitList, setHabitList, day) => {
         id={habit.id + "." + day}
         type="checkbox"
         onChange={() => handleChange(habit.id, day, habitList, setHabitList)}
-        checked={habit.month.listStatus[day].complete}
+        checked={habit.month[day].complete}
       ></input>
     </td>
   ));
