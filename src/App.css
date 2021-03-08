@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #222b35;
+  color: white;
 }
 
 .App-logo {
@@ -41,25 +43,47 @@ table {
   margin-left: auto;
   margin-right: auto;
   width: 75%;
-  border: 1px solid black;
+  border: 1px solid #595959;
 }
-table td {
-  border: 2px solid black;
-  text-align: center;
-  justify-content: center;
-}
-table th {
-  border: 2px solid black;
-  justify-content: center;
-}
+
+table td,
+table th,
 table tr {
-  border: 2px solid black;
+  border: 1px solid #595959;
   justify-content: center;
 }
+table td:hover {
+  border: 1px solid white;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}
+
 input {
   text-align: center;
+  color: #595959;
 }
 
 .AddHabit {
   float: center;
+}
+
+.checked {
+  background-color: #005c2a;
+}
+
+h1 {
+  margin: 0px;
+  padding-top: 2vh;
+}
+button {
+  cursor: pointer;
+  background-color: #571712;
+  border: 1px solid #595959;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  display: inline-block;
+  align-items: left;
+  font-size: 16px;
 }

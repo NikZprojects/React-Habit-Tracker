@@ -15,14 +15,12 @@ const handleChange = (id, day, habitList, setHabitList) => {
 
 const listCheckboxes = (habitList, setHabitList, day) => {
   let checkboxes = habitList.map((habit) => (
-    <td key={habit.id}>
-      <input
-        key={habit.id}
-        id={habit.id + "." + day}
-        type="checkbox"
-        onChange={() => handleChange(habit.id, day, habitList, setHabitList)}
-        checked={habit.month[day].complete}
-      ></input>
+    <td
+      className={habit.month[day].complete ? "checked" : ""}
+      key={habit.id + "." + day}
+      onClick={() => handleChange(habit.id, day, habitList, setHabitList)}
+    >
+      {habit.month[day].complete ? "✓" : ""}
     </td>
   ));
   return checkboxes;
