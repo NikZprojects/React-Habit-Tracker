@@ -45,11 +45,12 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Habit Tracker</h1>
+      <h1>March 2021</h1>
       <div>{`\n`}</div>
-      <center>
+      <h3>
+        Add a habit:
         <AddHabit habitList={habitList} setHabitList={setHabitList} />
-      </center>
+      </h3>
       <table>
         <thead>
           <tr>
@@ -58,7 +59,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          <WeeklyChecklist habitList={habitList} />
+          <WeeklyChecklist habitList={habitList} setHabitList={setHabitList} />
         </tbody>
       </table>
       <button onClick={handleDelete}>Delete crossed off habits</button>
