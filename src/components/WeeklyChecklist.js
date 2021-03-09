@@ -49,7 +49,7 @@ const chooseSymbol = (completeStatus) => {
 const listCheckboxes = (habitList, setHabitList, day) => {
   let checkboxes = habitList.map((habit) => (
     <td
-      className={habit.month[day].complete}
+      className={`${habit.month[day].complete} + hoverable`}
       key={habit.id + "." + day}
       onClick={() => handleChange(habit.id, day, habitList, setHabitList)}
     >
@@ -61,6 +61,7 @@ const listCheckboxes = (habitList, setHabitList, day) => {
 
 const calcDayTotal = (habitList, days) => {
   const dayTotalArray = [];
+  const brightnessArray = [];
   for (let day = 0; day < days.length; day++) {
     let dayTotal = 0;
     for (let habit = 0; habit < habitList.length; habit++) {
@@ -69,8 +70,9 @@ const calcDayTotal = (habitList, days) => {
       }
     }
     dayTotalArray.push(dayTotal);
+    brightnessArray.push(dayTotal / habitList.length);
   }
-  return dayTotalArray;
+  return [dayTotalArray, brightnessArray];
 };
 
 export const WeeklyChecklist = ({ habitList, setHabitList }) => {
@@ -79,7 +81,15 @@ export const WeeklyChecklist = ({ habitList, setHabitList }) => {
     <tr key={(day + 1).toString()} value={day + 1}>
       <td>{day + 1}</td>
       {listCheckboxes(habitList, setHabitList, day)}
-      <td>{calcDayTotal(habitList, days)[day]}</td>
+      <td
+        style={{
+          backgroundColor: `rgb(0,156,57,${
+            calcDayTotal(habitList, days)[1][day]
+          }`,
+        }}
+      >
+        {calcDayTotal(habitList, days)[0][day]}
+      </td>
     </tr>
   ));
   return <>{listDays}</>;

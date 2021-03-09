@@ -60,7 +60,7 @@ table td {
   user-select: none;
 }
 
-table td:hover {
+table td.hoverable:hover {
   border: 1px solid white;
   justify-content: center;
   color: white;
