@@ -59,14 +59,28 @@ const listCheckboxes = (habitList, setHabitList, day) => {
   return checkboxes;
 };
 
+const calcDayTotal = (habitList, days) => {
+  const dayTotalArray = [];
+  for (let day = 0; day < days.length; day++) {
+    let dayTotal = 0;
+    for (let habit = 0; habit < habitList.length; habit++) {
+      if (habitList[habit].month[day].complete === "complete") {
+        dayTotal++;
+      }
+    }
+    dayTotalArray.push(dayTotal);
+  }
+  return dayTotalArray;
+};
+
 export const WeeklyChecklist = ({ habitList, setHabitList }) => {
   const days = [...Array(31).keys()];
   const listDays = days.map((day) => (
     <tr key={(day + 1).toString()} value={day + 1}>
       <td>{day + 1}</td>
       {listCheckboxes(habitList, setHabitList, day)}
+      <td>{calcDayTotal(habitList, days)[day]}</td>
     </tr>
   ));
-  //console.log(habitList[0].status.listStatus[0].complete);
   return <>{listDays}</>;
 };
