@@ -52,6 +52,14 @@ table tr {
   border: 1px solid #595959;
   justify-content: center;
 }
+
+table td {
+  /* Prevent highligting of symbols */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 table td:hover {
   border: 1px solid white;
   justify-content: center;
@@ -68,8 +76,11 @@ input {
   float: center;
 }
 
-.checked {
+.complete {
   background-color: #005c2a;
+}
+.missed {
+  background-color: #571712;
 }
 
 h1 {

@@ -4,7 +4,22 @@ const handleChange = (id, day, habitList, setHabitList) => {
   setHabitList(
     habitList.map((habit) => {
       if (habit.id.toString() === id) {
-        habit.month[day].complete = !habit.month[day].complete;
+        let completeStatus = habit.month[day].complete;
+        switch (completeStatus) {
+          case "":
+            completeStatus = "complete";
+            break;
+          case "complete":
+            completeStatus = "skipped";
+            break;
+          case "skipped":
+            completeStatus = "missed";
+            break;
+          case "missed":
+            completeStatus = "";
+            break;
+        }
+        habit.month[day].complete = completeStatus;
         return { ...habit };
       } else {
         return { ...habit };
@@ -13,14 +28,32 @@ const handleChange = (id, day, habitList, setHabitList) => {
   );
 };
 
+const chooseSymbol = (completeStatus) => {
+  let completeSymbol = "";
+  switch (completeStatus) {
+    case "":
+      break;
+    case "complete":
+      completeSymbol = "✓";
+      break;
+    case "skipped":
+      completeSymbol = "–";
+      break;
+    case "missed":
+      completeSymbol = "✕";
+      break;
+  }
+  return completeSymbol;
+};
+
 const listCheckboxes = (habitList, setHabitList, day) => {
   let checkboxes = habitList.map((habit) => (
     <td
-      className={habit.month[day].complete ? "checked" : ""}
+      className={habit.month[day].complete}
       key={habit.id + "." + day}
       onClick={() => handleChange(habit.id, day, habitList, setHabitList)}
     >
-      {habit.month[day].complete ? "✓" : ""}
+      {chooseSymbol(habit.month[day].complete)}
     </td>
   ));
   return checkboxes;
