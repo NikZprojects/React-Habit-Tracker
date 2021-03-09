@@ -9,7 +9,7 @@ function App() {
   const [habitList, setHabitList] = useState([]);
 
   useEffect(() => {
-    if (habitList.length >= 0) {
+    if (habitList.length > 0) {
       setData(habitList);
     } else {
       let mounted = true;
@@ -62,6 +62,7 @@ function App() {
           <tr>
             <th></th>
             <HabitList habitList={habitList} handleToggle={handleToggle} />
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>

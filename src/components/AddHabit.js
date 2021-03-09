@@ -13,7 +13,7 @@ export const AddHabit = ({ habitList, setHabitList }) => {
     const days = [...Array(31).keys()];
     const month = days.map((day) => ({
       day: day,
-      complete: false,
+      complete: "",
     }));
 
     let newHabit = {
