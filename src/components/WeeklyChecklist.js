@@ -72,25 +72,54 @@ const calcDayTotal = (habitList, days) => {
     dayTotalArray.push(dayTotal);
     brightnessArray.push(dayTotal / habitList.length);
   }
-  return [dayTotalArray, brightnessArray];
+  return { dayTotal: dayTotalArray, brightness: brightnessArray };
+};
+
+const weeklyTotal = (habits, day, dayTotalArray) => {
+  if (day > 0 && day % 7 === 0) {
+    let weekTotal = 0;
+    for (let count = day - 7; count < day; count++) {
+      weekTotal += dayTotalArray[count];
+    }
+    return (
+      <tr>
+        <td className="inactiveCells" colspan={habits + 1}>
+          Week {day / 7} Total:
+        </td>
+        <td
+          style={
+            weekTotal === 0
+              ? { backgroundColor: "#333f4f" }
+              : { backgroundColor: `rgb(0,156,57,${weekTotal / (habits * 5)}` }
+          }
+        >
+          {weekTotal}
+        </td>
+      </tr>
+    );
+  }
 };
 
 export const WeeklyChecklist = ({ habitList, setHabitList }) => {
   const days = [...Array(31).keys()];
+  const dayTotalArray = calcDayTotal(habitList, days).dayTotal;
   const listDays = days.map((day) => (
-    <tr key={(day + 1).toString()} value={day + 1}>
-      <td>{day + 1}</td>
-      {listCheckboxes(habitList, setHabitList, day)}
-      <td
-        style={{
-          backgroundColor: `rgb(0,156,57,${
-            calcDayTotal(habitList, days)[1][day]
-          }`,
-        }}
-      >
-        {calcDayTotal(habitList, days)[0][day]}
-      </td>
-    </tr>
+    <>
+      {weeklyTotal(habitList.length, day, dayTotalArray)}
+      <tr key={(day + 1).toString()} value={day + 1}>
+        <td className="inactiveCells">{day + 1}</td>
+        {listCheckboxes(habitList, setHabitList, day)}
+        <td
+          style={{
+            backgroundColor: `rgb(0,156,57,${
+              calcDayTotal(habitList, days).brightness[day]
+            }`,
+          }}
+        >
+          {dayTotalArray[day]}
+        </td>
+      </tr>
+    </>
   ));
   return <>{listDays}</>;
 };

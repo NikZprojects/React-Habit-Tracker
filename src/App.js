@@ -60,15 +60,16 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th></th>
+            <th className="inactiveCells"></th>
             <HabitList habitList={habitList} handleToggle={handleToggle} />
-            <th>Total</th>
+            <th className="inactiveCells">Total</th>
           </tr>
         </thead>
         <tbody>
           <WeeklyChecklist habitList={habitList} setHabitList={setHabitList} />
         </tbody>
       </table>
+      <div className="padding"></div>
     </div>
   );
 }
