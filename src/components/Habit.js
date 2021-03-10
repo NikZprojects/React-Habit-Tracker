@@ -12,7 +12,11 @@ export const Habit = ({ habit, handleToggle }) => {
       id={habit.id}
       key={habit.id}
       style={{ habit }}
-      className={habit.complete ? "habit + strike" : "habit"}
+      className={
+        habit.complete
+          ? "inactiveCells + habit + strike"
+          : "inactiveCells + habit"
+      }
     >
       {habit.name}
     </th>
