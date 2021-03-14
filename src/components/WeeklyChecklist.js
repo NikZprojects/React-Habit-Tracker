@@ -28,25 +28,25 @@ const handleChange = (id, day, habitList, setHabitList) => {
   );
 };
 
-const chooseSymbol = (completeStatus) => {
-  let completeSymbol = "";
-  switch (completeStatus) {
-    case "":
-      break;
-    case "complete":
-      completeSymbol = "✓";
-      break;
-    case "skipped":
-      completeSymbol = "–";
-      break;
-    case "missed":
-      completeSymbol = "✕";
-      break;
-  }
-  return completeSymbol;
-};
-
 const listCheckboxes = (habitList, setHabitList, day) => {
+  const chooseSymbol = (completeStatus) => {
+    let completeSymbol = "";
+    switch (completeStatus) {
+      case "":
+        break;
+      case "complete":
+        completeSymbol = "✓";
+        break;
+      case "skipped":
+        completeSymbol = "–";
+        break;
+      case "missed":
+        completeSymbol = "✕";
+        break;
+    }
+    return completeSymbol;
+  };
+
   let checkboxes = habitList.map((habit) => (
     <td
       className={`${habit.month[day].complete} + hoverable`}
@@ -59,126 +59,85 @@ const listCheckboxes = (habitList, setHabitList, day) => {
   return checkboxes;
 };
 
-const calcDayTotal = (habitList, days) => {
+const calcTotals = (habitList, days) => {
   const dayTotalArray = [];
-  const brightnessArray = [];
+  var weekTotal = 0;
+  const weekTotalArray = [];
+  var monthTotal = 0;
+
   for (let day = 0; day < days.length; day++) {
     let dayTotal = 0;
     for (let habit = 0; habit < habitList.length; habit++) {
       if (habitList[habit].month[day].complete === "complete") {
         dayTotal++;
+        weekTotal++;
+        monthTotal++;
       }
+    }
+    if ((day + 1) % 7 === 0) {
+      weekTotalArray.push(weekTotal);
+      weekTotal = 0;
     }
     dayTotalArray.push(dayTotal);
-    brightnessArray.push(dayTotal / habitList.length);
   }
-  return { dayTotal: dayTotalArray, brightness: brightnessArray };
+
+  return {
+    dayTotalArray: dayTotalArray,
+    weekTotalArray: weekTotalArray,
+    monthTotal: monthTotal,
+  };
 };
 
-const weeklyTotal = (habits, day, dayTotalArray) => {
-  day += 1;
-  if ((day > 0 && day % 7 === 0) || day === dayTotalArray.length) {
-    let weekTotal = 0;
-    let monthTotal = 0;
-    if (day === dayTotalArray.length) {
-      for (let count = day - (day % 7); count < day; count++) {
-        weekTotal += dayTotalArray[count];
+const formatTotal = (total, maximum, type) => {
+  let defaultColor = type === "week" ? "#333f4f" : "#222b35";
+  return (
+    <td
+      style={
+        total === 0
+          ? { backgroundColor: `${defaultColor}` }
+          : { backgroundColor: `rgb(0,156,57,${total / maximum}` }
       }
-      for (let count = 0; count < day; count++) {
-        monthTotal += dayTotalArray[count];
-      }
-    } else {
-      for (let count = day - 7; count < day; count++) {
-        weekTotal += dayTotalArray[count];
-      }
-    }
-
-    return (
-      <>
-        {day !== dayTotalArray.length ? (
-          <tr>
-            <td className="inactiveCells" colSpan={habits + 1}>
-              Week {day / 7} Total:
-            </td>
-            <td
-              style={
-                weekTotal === 0
-                  ? { backgroundColor: "#333f4f" }
-                  : {
-                      backgroundColor: `rgb(0,156,57,${
-                        weekTotal / (habits * 5)
-                      }`,
-                    }
-              }
-            >
-              {weekTotal}
-            </td>
-          </tr>
-        ) : (
-          <>
-            <tr>
-              <td className="inactiveCells" colSpan={habits + 1}>
-                Final Week Total:
-              </td>
-              <td
-                style={
-                  weekTotal === 0
-                    ? { backgroundColor: "#333f4f" }
-                    : {
-                        backgroundColor: `rgb(0,156,57,${
-                          weekTotal / (habits * 5)
-                        }`,
-                      }
-                }
-              >
-                {weekTotal}
-              </td>
-            </tr>
-            <tr>
-              <td className="inactiveCells" colSpan={habits + 1}>
-                Month Total:
-              </td>
-              <td
-                style={
-                  monthTotal === 0
-                    ? { backgroundColor: "#333f4f" }
-                    : {
-                        backgroundColor: `rgb(0,156,57,${
-                          monthTotal / (habits * 5 * (dayTotalArray.length / 7))
-                        }`,
-                      }
-                }
-              >
-                {monthTotal}
-              </td>
-            </tr>
-          </>
-        )}
-      </>
-    );
-  }
+    >
+      {total}
+    </td>
+  );
 };
 
 export const WeeklyChecklist = ({ habitList, setHabitList }) => {
   const days = [...Array(31).keys()];
-  const dayTotalArray = calcDayTotal(habitList, days).dayTotal;
-  const listDays = days.map((day) => (
-    <>
-      <tr key={(day + 1).toString()} value={day + 1}>
-        <td className="inactiveCells">{day + 1}</td>
-        {listCheckboxes(habitList, setHabitList, day)}
-        <td
-          style={{
-            backgroundColor: `rgb(0,156,57,${
-              calcDayTotal(habitList, days).brightness[day]
-            }`,
-          }}
-        >
-          {dayTotalArray[day]}
-        </td>
-      </tr>
-      {weeklyTotal(habitList.length, day, dayTotalArray)}
-    </>
-  ));
-  return <>{listDays}</>;
+  const totals = calcTotals(habitList, days);
+  return days.map((day) => {
+    day += 1;
+    return (
+      <>
+        <tr key={day.toString()}>
+          <td className="inactiveCells">{day}</td>
+          {listCheckboxes(habitList, setHabitList, day - 1)}
+          {formatTotal(totals.dayTotalArray[day - 1], habitList.length)}
+        </tr>
+
+        {day % 7 === 0 ? (
+          <tr>
+            <td className="inactiveCells" colSpan={habitList.length + 1}>
+              Week {day / 7} Total:
+            </td>
+            {formatTotal(
+              totals.weekTotalArray[day / 7 - 1],
+              habitList.length * 5,
+              "week"
+            )}
+          </tr>
+        ) : null}
+
+        {day === days.length ? (
+          <tr>
+            <td className="inactiveCells" colSpan={habitList.length + 1}>
+              Month Total:
+            </td>
+            {formatTotal(totals.monthTotal, habitList.length * day, "week")}
+          </tr>
+        ) : null}
+      </>
+    );
+  });
 };

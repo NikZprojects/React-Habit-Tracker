@@ -33,7 +33,7 @@ export const AddHabit = ({ habitList, setHabitList }) => {
         <input
           value={userInput}
           type="text"
-          placeholder="Add a habit..."
+          placeholder=""
           onChange={handleChange}
         />
       </form>
