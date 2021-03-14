@@ -69,7 +69,8 @@ table td.hoverable:hover {
 
 input {
   text-align: center;
-  color: #595959;
+  color: white;
+  background-color: #333f4f;
 }
 
 .AddHabit {
