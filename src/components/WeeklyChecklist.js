@@ -88,8 +88,9 @@ const calcTotals = (habitList, days) => {
   };
 };
 
-const formatTotal = (total, maximum, type) => {
+const formatTotal = (total, maximum, type, toggleDisplay) => {
   let defaultColor = type === "week" ? "#333f4f" : "#222b35";
+  let percent = (total * 100) / maximum;
   return (
     <td
       style={
@@ -97,8 +98,9 @@ const formatTotal = (total, maximum, type) => {
           ? { backgroundColor: `${defaultColor}` }
           : { backgroundColor: `rgb(0,156,57,${total / maximum}` }
       }
+      onClick={() => (toggleDisplay = !toggleDisplay)}
     >
-      {total}
+      {toggleDisplay ? Number(percent.toFixed(0)) + "%" : total}
     </td>
   );
 };
@@ -134,7 +136,12 @@ export const WeeklyChecklist = ({ habitList, setHabitList }) => {
             <td className="inactiveCells" colSpan={habitList.length + 1}>
               Month Total:
             </td>
-            {formatTotal(totals.monthTotal, habitList.length * day, "week")}
+            {formatTotal(
+              totals.monthTotal,
+              habitList.length * day,
+              "week",
+              true
+            )}
           </tr>
         ) : null}
       </>
