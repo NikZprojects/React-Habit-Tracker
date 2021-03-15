@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const handleChange = (id, day, habitList, setHabitList) => {
   setHabitList(
@@ -88,19 +88,31 @@ const calcTotals = (habitList, days) => {
   };
 };
 
-const formatTotal = (total, maximum, type, toggleDisplay) => {
-  let defaultColor = type === "week" ? "#333f4f" : "#222b35";
+const formatTotal = (total, maximum, type, togglePercent, setTogglePercent) => {
+  let defaultColor = type === "day" ? "#222b35" : "#333f4f";
   let percent = (total * 100) / maximum;
+
+  const formatValue = (total, percent, type, togglePercent) => {
+    if (type === "day") {
+      return total;
+    } else {
+      return togglePercent ? Number(percent.toFixed(0)) + "%" : total;
+    }
+  };
+
   return (
     <td
+      className={type !== "day" ? "hoverable + togglePercent" : ""}
       style={
         total === 0
           ? { backgroundColor: `${defaultColor}` }
           : { backgroundColor: `rgb(0,156,57,${total / maximum}` }
       }
-      onClick={() => (toggleDisplay = !toggleDisplay)}
+      onClick={() =>
+        type !== "day" ? setTogglePercent((togglePercent = !togglePercent)) : ""
+      }
     >
-      {toggleDisplay ? Number(percent.toFixed(0)) + "%" : total}
+      {formatValue(total, percent, type, togglePercent)}
     </td>
   );
 };
@@ -108,6 +120,7 @@ const formatTotal = (total, maximum, type, toggleDisplay) => {
 export const WeeklyChecklist = ({ habitList, setHabitList }) => {
   const days = [...Array(31).keys()];
   const totals = calcTotals(habitList, days);
+  const [togglePercent, setTogglePercent] = useState([false]);
   return days.map((day) => {
     day += 1;
     return (
@@ -115,7 +128,7 @@ export const WeeklyChecklist = ({ habitList, setHabitList }) => {
         <tr key={day.toString()}>
           <td className="inactiveCells">{day}</td>
           {listCheckboxes(habitList, setHabitList, day - 1)}
-          {formatTotal(totals.dayTotalArray[day - 1], habitList.length)}
+          {formatTotal(totals.dayTotalArray[day - 1], habitList.length, "day")}
         </tr>
 
         {day % 7 === 0 ? (
@@ -126,7 +139,9 @@ export const WeeklyChecklist = ({ habitList, setHabitList }) => {
             {formatTotal(
               totals.weekTotalArray[day / 7 - 1],
               habitList.length * 5,
-              "week"
+              "week",
+              togglePercent,
+              setTogglePercent
             )}
           </tr>
         ) : null}
@@ -139,8 +154,9 @@ export const WeeklyChecklist = ({ habitList, setHabitList }) => {
             {formatTotal(
               totals.monthTotal,
               habitList.length * day,
-              "week",
-              true
+              "month",
+              togglePercent,
+              setTogglePercent
             )}
           </tr>
         ) : null}

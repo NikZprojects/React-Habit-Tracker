@@ -67,6 +67,10 @@ table td.hoverable:hover {
   cursor: pointer;
 }
 
+.togglePercent {
+  cursor: pointer;
+}
+
 input {
   text-align: center;
   color: white;
