@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
-const handleChange = (id, day, habitList, setHabitList) => {
+const handleChange = (monthView, id, day, habitList, setHabitList) => {
+  const year = monthView.getFullYear();
+  const month = monthView.getMonth();
   setHabitList(
     habitList.map((habit) => {
       if (habit.id.toString() === id) {
-        let completeStatus = habit.month[day].complete;
+        let completeStatus = habit.data[year][month][day].complete;
         switch (completeStatus) {
           case "":
             completeStatus = "complete";
@@ -19,7 +21,7 @@ const handleChange = (id, day, habitList, setHabitList) => {
             completeStatus = "";
             break;
         }
-        habit.month[day].complete = completeStatus;
+        habit.data[year][month][day].complete = completeStatus;
         return { ...habit };
       } else {
         return { ...habit };
@@ -28,7 +30,9 @@ const handleChange = (id, day, habitList, setHabitList) => {
   );
 };
 
-const listCheckboxes = (habitList, setHabitList, day) => {
+const listCheckboxes = (monthView, habitList, setHabitList, day) => {
+  const year = monthView.getFullYear();
+  const month = monthView.getMonth();
   const chooseSymbol = (completeStatus) => {
     let completeSymbol = "";
     switch (completeStatus) {
@@ -49,17 +53,22 @@ const listCheckboxes = (habitList, setHabitList, day) => {
 
   let checkboxes = habitList.map((habit) => (
     <td
-      className={`${habit.month[day].complete} + hoverable`}
+      className={`${habit.data[year][month][day].complete} + hoverable`}
       key={habit.id + "." + day}
-      onClick={() => handleChange(habit.id, day, habitList, setHabitList)}
+      onClick={() =>
+        handleChange(monthView, habit.id, day, habitList, setHabitList)
+      }
     >
-      {chooseSymbol(habit.month[day].complete)}
+      {chooseSymbol(habit.data[year][month][day].complete)}
     </td>
   ));
   return checkboxes;
 };
 
-const calcTotals = (habitList, days) => {
+const calcTotals = (monthView, habitList, days) => {
+  const year = monthView.getFullYear();
+  const month = monthView.getMonth();
+
   const dayTotalArray = [];
   var weekTotal = 0;
   const weekTotalArray = [];
@@ -68,7 +77,7 @@ const calcTotals = (habitList, days) => {
   for (let day = 0; day < days.length; day++) {
     let dayTotal = 0;
     for (let habit = 0; habit < habitList.length; habit++) {
-      if (habitList[habit].month[day].complete === "complete") {
+      if (habitList[habit].data[year][month][day].complete === "complete") {
         dayTotal++;
         weekTotal++;
         monthTotal++;
@@ -117,17 +126,17 @@ const formatTotal = (total, maximum, type, togglePercent, setTogglePercent) => {
   );
 };
 
-export const WeeklyChecklist = ({ habitList, setHabitList }) => {
+export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
   const days = [...Array(31).keys()];
-  const totals = calcTotals(habitList, days);
-  const [togglePercent, setTogglePercent] = useState([false]);
+  const totals = calcTotals(monthView, habitList, days);
+  const [togglePercent, setTogglePercent] = useState();
   return days.map((day) => {
     day += 1;
     return (
       <>
         <tr key={day.toString()}>
           <td className="inactiveCells">{day}</td>
-          {listCheckboxes(habitList, setHabitList, day - 1)}
+          {listCheckboxes(monthView, habitList, setHabitList, day - 1)}
           {formatTotal(totals.dayTotalArray[day - 1], habitList.length, "day")}
         </tr>
 
