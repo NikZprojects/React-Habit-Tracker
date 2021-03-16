@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 
-export const AddHabit = ({ habitList, setHabitList }) => {
+export const AddHabit = ({ monthView, habitList, setHabitList }) => {
   const [userInput, setUserInput] = useState("");
 
   const handleChange = (e) => {
@@ -10,17 +10,20 @@ export const AddHabit = ({ habitList, setHabitList }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const year = monthView.getFullYear();
+    const month = monthView.getMonth();
     const days = [...Array(31).keys()];
-    const month = days.map((day) => ({
+    const monthData = days.map((day) => ({
       day: day,
       complete: "",
     }));
+    const data = { [year]: { [month]: monthData } };
 
     let newHabit = {
       id: uuid(),
       name: userInput,
-      complete: false,
-      month: month,
+      delete: false,
+      data: data,
     };
     console.log(newHabit);
     setHabitList([...habitList, newHabit]);

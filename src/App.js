@@ -7,6 +7,21 @@ import { WeeklyChecklist } from "./components/WeeklyChecklist";
 
 function App() {
   const [habitList, setHabitList] = useState([]);
+  const [monthView, setMonthView] = useState(new Date());
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   useEffect(() => {
     if (habitList.length > 0) {
@@ -26,7 +41,7 @@ function App() {
     setHabitList(
       habitList.map((habit) => {
         if (habit.id.toString() === id) {
-          habit = { ...habit, complete: !habit.complete };
+          habit = { ...habit, delete: !habit.delete };
           return habit;
         } else {
           return { ...habit };
@@ -38,21 +53,90 @@ function App() {
   const handleDelete = () => {
     setHabitList(
       habitList.filter((habit) => {
-        return !habit.complete ? { habit } : "";
+        return !habit.delete ? { habit } : "";
       })
     );
   };
 
+  const handleMonthChange = (action) => {
+    const year = monthView.getFullYear();
+    const month = monthView.getMonth();
+
+    if (action === "next") {
+      if (monthView.getMonth() === 11) {
+        var newDate = new Date(year + 1, 0, 1);
+      } else {
+        var newDate = new Date(year, month + 1, 1);
+      }
+    } else {
+      if (monthView.getMonth() === 0) {
+        var newDate = new Date(year - 1, 11, 1);
+      } else {
+        var newDate = new Date(year, month - 1, 1);
+      }
+    }
+    setMonthView(newDate);
+
+    const newYear = newDate.getFullYear();
+    const newMonth = newDate.getMonth();
+
+    const generateMonthData = () => {
+      const days = [...Array(31).keys()];
+      const monthData = days.map((day) => ({
+        day: day,
+        complete: "",
+      }));
+      return monthData;
+    };
+
+    if (!habitList[0].data[newYear]) {
+      setHabitList(
+        habitList.map((habit) => {
+          habit.data.[newYear] = { [newMonth]: generateMonthData() }
+          console.log(habit);
+          return { ...habit };
+        })
+      );
+    } else if (!habitList[0].data[newYear][newMonth]) {
+      setHabitList(
+        habitList.map((habit) => {
+          habit.data[newYear][newMonth] = generateMonthData();
+          return { ...habit };
+        })
+      );
+    }
+  };
+
   return (
     <div className="App">
-      <h1>March 2021</h1>
+      <div className="gridContainer">
+        <button
+          className="setPrevMonth"
+          onClick={() => handleMonthChange("previous")}
+        >
+          ❮
+        </button>
+        <h1>{months[monthView.getMonth()] + " " + monthView.getFullYear()}</h1>
+        <button
+          className="setNextMonth"
+          onClick={() => handleMonthChange("next")}
+        >
+          ❯
+        </button>
+      </div>
       <h3>
         Add a habit:
-        <AddHabit habitList={habitList} setHabitList={setHabitList} />
+        <AddHabit
+          monthView={monthView}
+          habitList={habitList}
+          setHabitList={setHabitList}
+        />
       </h3>
-      {habitList.some((habit) => habit.complete) ? (
+      {habitList.some((habit) => habit.delete) ? (
         <div>
-          <button onClick={handleDelete}>Delete habit?</button>
+          <button className="deleteButton" onClick={handleDelete}>
+            Delete habit?
+          </button>
         </div>
       ) : (
         ""
@@ -66,12 +150,15 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          <WeeklyChecklist habitList={habitList} setHabitList={setHabitList} />
+          <WeeklyChecklist
+            monthView={monthView}
+            habitList={habitList}
+            setHabitList={setHabitList}
+          />
         </tbody>
       </table>
       <div className="padding"></div>
     </div>
   );
 }
-
 export default App;
