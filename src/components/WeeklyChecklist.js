@@ -65,34 +65,46 @@ const listCheckboxes = (monthView, habitList, setHabitList, day) => {
   return checkboxes;
 };
 
-const calcTotals = (monthView, habitList, days) => {
+const calcTotals = (monthView, habitList, days, togglePercent) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
 
   const dayTotalArray = [];
+  const weekLengthArray = [];
+  var weekLength = 0;
   var weekTotal = 0;
   const weekTotalArray = [];
   var monthTotal = 0;
 
-  for (let day = 0; day < days.length; day++) {
+  for (let day = 0; day < days; day++) {
     let dayTotal = 0;
     for (let habit = 0; habit < habitList.length; habit++) {
+      weekLength++;
       if (habitList[habit].data[year][month][day].complete === "complete") {
         dayTotal++;
         weekTotal++;
         monthTotal++;
       }
     }
-    if ((day + 1) % 7 === 0) {
+    if (new Date(year, month, day + 1).getDay() === 0) {
+      // Handle weekend-only weeks:
+      if (weekLength / habitList.length <= 2) {
+        togglePercent ? (weekTotal += 1 * habitList.length) : (weekTotal += 0);
+        weekLength = 1;
+      } else {
+        weekLength = weekLength / habitList.length - 2;
+      }
       weekTotalArray.push(weekTotal);
+      weekLengthArray.push(weekLength);
       weekTotal = 0;
+      weekLength = 0;
     }
     dayTotalArray.push(dayTotal);
   }
-
   return {
     dayTotalArray: dayTotalArray,
     weekTotalArray: weekTotalArray,
+    weekLengthArray: weekLengthArray,
     monthTotal: monthTotal,
   };
 };
@@ -127,27 +139,36 @@ const formatTotal = (total, maximum, type, togglePercent, setTogglePercent) => {
 };
 
 export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
-  const days = [...Array(31).keys()];
-  const totals = calcTotals(monthView, habitList, days);
+  const year = monthView.getFullYear();
+  const month = monthView.getMonth();
+  const days = 32 - new Date(year, month, 32).getDate();
+  const daysArray = [...Array(days).keys()];
+
   const [togglePercent, setTogglePercent] = useState();
-  return days.map((day) => {
+  const [weekCount, setWeekCount] = useState(0);
+  const totals = calcTotals(monthView, habitList, days, togglePercent);
+  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  var week = 0;
+  return daysArray.map((day) => {
     day += 1;
     return (
       <>
         <tr key={day.toString()}>
-          <td className="inactiveCells">{day}</td>
+          <td className="inactiveCells">
+            {day} - {dayNames[new Date(year, month, day - 1).getDay()]}
+          </td>
           {listCheckboxes(monthView, habitList, setHabitList, day - 1)}
           {formatTotal(totals.dayTotalArray[day - 1], habitList.length, "day")}
         </tr>
 
-        {day % 7 === 0 ? (
+        {new Date(year, month, day).getDay() === 0 ? (
           <tr>
             <td className="inactiveCells" colSpan={habitList.length + 1}>
-              Week {day / 7} Total:
+              Week {(week += 1)} Total:
             </td>
             {formatTotal(
-              totals.weekTotalArray[day / 7 - 1],
-              habitList.length * 5,
+              totals.weekTotalArray[week - 1],
+              habitList.length * totals.weekLengthArray[week - 1],
               "week",
               togglePercent,
               setTogglePercent
@@ -155,7 +176,7 @@ export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
           </tr>
         ) : null}
 
-        {day === days.length ? (
+        {day === daysArray.length ? (
           <tr>
             <td className="inactiveCells" colSpan={habitList.length + 1}>
               Month Total:

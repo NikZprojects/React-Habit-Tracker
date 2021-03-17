@@ -12,9 +12,10 @@ export const AddHabit = ({ monthView, habitList, setHabitList }) => {
     e.preventDefault();
     const year = monthView.getFullYear();
     const month = monthView.getMonth();
-    const days = [...Array(31).keys()];
-    const monthData = days.map((day) => ({
-      day: day,
+    const days = 32 - new Date(year, month, 32).getDate();
+    const daysArray = [...Array(days).keys()];
+    const monthData = daysArray.map((day) => ({
+      day: day + 1,
       complete: "",
     }));
     const data = { [year]: { [month]: monthData } };
