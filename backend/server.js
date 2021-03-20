@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const routes = require("./routes/api");
+const routes = require("./sample_project/api_routes");
 const path = require("path");
 require("dotenv").config();
 
@@ -12,8 +12,10 @@ const port = process.env.PORT || 5000;
 
 // Connects to the database
 mongoose
-  .connect(process.env.DB, { useNewUrlParser: true })
-  .then(() => console.log(`Database connected successfully`))
+  .connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() =>
+    console.log(`Success! Database connected successfully from ${host}:${port}`)
+  )
   .catch((err) => console.log(err));
 
 mongoose.Promise = global.Promise;
@@ -37,5 +39,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Sucess! Server running on: ${host}:${port}`);
+  console.log(`Connecting to cloud server...`);
 });
