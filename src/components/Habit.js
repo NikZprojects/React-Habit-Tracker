@@ -1,9 +1,22 @@
 import React from "react";
 
-export const Habit = ({ habit, handleToggle }) => {
+const handleToggle = (id, habitList, setHabitList) => {
+  setHabitList(
+    habitList.map((habit) => {
+      if (habit._id.toString() === id) {
+        habit = { ...habit, deleteHabit: !habit.deleteHabit };
+        return habit;
+      } else {
+        return { ...habit };
+      }
+    })
+  );
+};
+
+export const Habit = ({ habit, habitList, setHabitList }) => {
   const handleClick = (e) => {
     e.preventDefault();
-    handleToggle(e.target.id);
+    handleToggle(e.target.id, habitList, setHabitList);
   };
 
   return (
