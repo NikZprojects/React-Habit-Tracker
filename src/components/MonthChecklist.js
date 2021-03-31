@@ -186,7 +186,7 @@ const formatTotal = (total, maximum, type, togglePercent, setTogglePercent) => {
   );
 };
 
-export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
+export const MonthChecklist = ({ monthView, habitList, setHabitList }) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
   const days = 32 - new Date(year, month, 32).getDate();
