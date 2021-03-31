@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import { Header } from "./components/Header";
 import { AddHabit } from "./components/AddHabit";
 import { HabitList } from "./components/HabitList";
 import { WeeklyChecklist } from "./components/WeeklyChecklist";
@@ -9,20 +10,6 @@ function App() {
   const [habitList, setHabitList] = useState([]);
   const [monthView, setMonthView] = useState(new Date());
   const [loaded, setLoaded] = useState();
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
   useEffect(() => {
     let mounted = true;
@@ -69,48 +56,11 @@ function App() {
     );
   };
 
-  const handleMonthChange = (action) => {
-    const year = monthView.getFullYear();
-    const month = monthView.getMonth();
-
-    var newDate;
-
-    if (action === "next") {
-      if (monthView.getMonth() === 11) {
-        newDate = new Date(year + 1, 0, 1);
-      } else {
-        newDate = new Date(year, month + 1, 1);
-      }
-    } else {
-      if (monthView.getMonth() === 0) {
-        newDate = new Date(year - 1, 11, 1);
-      } else {
-        newDate = new Date(year, month - 1, 1);
-      }
-    }
-    setMonthView(newDate);
-  };
-
   return (
     <div className="App">
       <div>
-        <div className="gridContainer">
-          <button
-            className="setPrevMonth"
-            onClick={() => handleMonthChange("previous")}
-          >
-            ❮
-          </button>
-          <h1>
-            {months[monthView.getMonth()] + " " + monthView.getFullYear()}
-          </h1>
-          <button
-            className="setNextMonth"
-            onClick={() => handleMonthChange("next")}
-          >
-            ❯
-          </button>
-        </div>
+        <Header monthView={monthView} setMonthView={setMonthView} />
+
         <h3>
           Add a habit:
           <AddHabit habitList={habitList} setHabitList={setHabitList} />
