@@ -65,14 +65,7 @@ router.route("/update/:id").post((req, res) => {
       } else {
         habit.completionData = habit.completionData;
       }
-      habit
-        .save()
-        .then(() =>
-          Habit.find()
-            .then((habits) => res.json(habits))
-            .catch((err) => res.status(400).json("Error: " + err))
-        )
-        .catch((err) => res.status(400).json("Error: " + err));
+      habit.save();
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
