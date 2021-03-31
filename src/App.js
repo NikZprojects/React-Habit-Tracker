@@ -3,8 +3,7 @@ import "./App.css";
 import { Header } from "./components/Header";
 import { AddHabit } from "./components/AddHabit";
 import { DeleteButton } from "./components/DeleteButton";
-import { HabitList } from "./components/HabitList";
-import { WeeklyChecklist } from "./components/WeeklyChecklist";
+import { HabitTable } from "./components/HabitTable";
 const axios = require("axios");
 
 function App() {
@@ -29,29 +28,14 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-        <Header monthView={monthView} setMonthView={setMonthView} />
-        <AddHabit habitList={habitList} setHabitList={setHabitList} />
-        <DeleteButton habitList={habitList} setHabitList={setHabitList} />
-
-        <table>
-          <thead>
-            <tr>
-              <th className="inactiveCells"></th>
-              <HabitList habitList={habitList} setHabitList={setHabitList} />
-              <th className="inactiveCells">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <WeeklyChecklist
-              monthView={monthView}
-              habitList={habitList}
-              setHabitList={setHabitList}
-            />
-          </tbody>
-        </table>
-        <div className="padding"></div>
-      </div>
+      <Header monthView={monthView} setMonthView={setMonthView} />
+      <AddHabit habitList={habitList} setHabitList={setHabitList} />
+      <DeleteButton habitList={habitList} setHabitList={setHabitList} />
+      <HabitTable
+        monthView={monthView}
+        habitList={habitList}
+        setHabitList={setHabitList}
+      />
     </div>
   );
 }
