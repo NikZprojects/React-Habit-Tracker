@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 const axios = require("axios");
+const { v4: uuid } = require("uuid");
 
 const handleChange = (monthView, id, day, habitList, setHabitList) => {
   const year = monthView.getFullYear();
@@ -193,18 +194,15 @@ export const MonthChecklist = ({ monthView, habitList, setHabitList }) => {
   const daysArray = [...Array(days).keys()];
 
   const [togglePercent, setTogglePercent] = useState();
-  const [weekCount, setWeekCount] = useState(0);
   const totals = calcTotals(monthView, habitList, days, togglePercent);
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var week = 0;
   return daysArray.map((day) => {
     day += 1;
     let date = new Date(year, month, day);
-    let dateID =
-      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     return (
-      <>
-        <tr key={day.toString()}>
+      <React.Fragment key={uuid()}>
+        <tr>
           <td className="inactiveCells">
             {day} - {dayNames[date.getDay()]}
           </td>
@@ -241,7 +239,7 @@ export const MonthChecklist = ({ monthView, habitList, setHabitList }) => {
             )}
           </tr>
         ) : null}
-      </>
+      </React.Fragment>
     );
   });
 };
