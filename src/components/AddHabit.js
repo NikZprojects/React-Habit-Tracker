@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { v4 as uuid } from "uuid";
+const axios = require("axios");
 
-export const AddHabit = ({ monthView, habitList, setHabitList }) => {
+export const AddHabit = ({ habitList, setHabitList }) => {
   const [userInput, setUserInput] = useState("");
 
   const handleChange = (e) => {
@@ -10,24 +10,16 @@ export const AddHabit = ({ monthView, habitList, setHabitList }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const year = monthView.getFullYear();
-    const month = monthView.getMonth();
-    const days = 32 - new Date(year, month, 32).getDate();
-    const daysArray = [...Array(days).keys()];
-    const monthData = daysArray.map((day) => ({
-      day: day + 1,
-      complete: "",
-    }));
-    const data = { [year]: { [month]: monthData } };
 
     let newHabit = {
-      id: uuid(),
       name: userInput,
-      delete: false,
-      data: data,
+      deleteHabit: false,
+      completionData: [],
     };
-    console.log(newHabit);
-    setHabitList([...habitList, newHabit]);
+
+    axios
+      .post("http://localhost:5000/habits/add", newHabit)
+      .then((res) => setHabitList(res.data));
     setUserInput("");
   };
 

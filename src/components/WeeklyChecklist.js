@@ -1,16 +1,24 @@
 import React, { useState } from "react";
+const axios = require("axios");
 
 const handleChange = (monthView, id, day, habitList, setHabitList) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
+  let date = new Date(year, month, day);
+  let dateID =
+    date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+
   setHabitList(
     habitList.map((habit) => {
-      if (habit.id.toString() === id) {
-        let completeStatus = habit.data[year][month][day].complete;
+      if (habit._id.toString() === id) {
+        let completeData = habit.completionData.find(
+          (data) => data.date === dateID
+        );
+        let completeStatus = "";
+        if (completeData) {
+          completeStatus = completeData.complete;
+        }
         switch (completeStatus) {
-          case "":
-            completeStatus = "complete";
-            break;
           case "complete":
             completeStatus = "skipped";
             break;
@@ -20,8 +28,19 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
           case "missed":
             completeStatus = "";
             break;
+          default:
+            completeStatus = "complete";
         }
-        habit.data[year][month][day].complete = completeStatus;
+        const newData = {
+          date: dateID,
+          complete: completeStatus,
+        };
+        axios
+          .post("http://localhost:5000/habits/update/" + id, {
+            newData: newData,
+          })
+          .then((res) => setHabitList(res.data));
+
         return { ...habit };
       } else {
         return { ...habit };
@@ -33,11 +52,13 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
 const listCheckboxes = (monthView, habitList, setHabitList, day) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
+  let date = new Date(year, month, day);
+  let dateID =
+    date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+
   const chooseSymbol = (completeStatus) => {
     let completeSymbol = "";
     switch (completeStatus) {
-      case "":
-        break;
       case "complete":
         completeSymbol = "✓";
         break;
@@ -47,21 +68,33 @@ const listCheckboxes = (monthView, habitList, setHabitList, day) => {
       case "missed":
         completeSymbol = "✕";
         break;
+      default:
+        break;
     }
     return completeSymbol;
   };
 
-  let checkboxes = habitList.map((habit) => (
-    <td
-      className={`${habit.data[year][month][day].complete} + hoverable`}
-      key={habit.id + "." + day}
-      onClick={() =>
-        handleChange(monthView, habit.id, day, habitList, setHabitList)
-      }
-    >
-      {chooseSymbol(habit.data[year][month][day].complete)}
-    </td>
-  ));
+  let checkboxes = habitList.map((habit) => {
+    let completeStatus = "";
+    let completeData = habit.completionData.find(
+      (data) => data.date === dateID
+    );
+    if (completeData) {
+      completeStatus = completeData.complete;
+    }
+
+    return (
+      <td
+        className={`${completeStatus} + hoverable`}
+        key={habit._id + "." + day}
+        onClick={() =>
+          handleChange(monthView, habit._id, day, habitList, setHabitList)
+        }
+      >
+        {chooseSymbol(completeStatus)}
+      </td>
+    );
+  });
   return checkboxes;
 };
 
@@ -75,18 +108,31 @@ const calcTotals = (monthView, habitList, days, togglePercent) => {
   var weekTotal = 0;
   const weekTotalArray = [];
   var monthTotal = 0;
+  var monthLength = 0;
 
-  for (let day = 0; day < days; day++) {
+  for (let day = 1; day <= days; day++) {
     let dayTotal = 0;
+
+    let date = new Date(year, month, day);
+    let dateID =
+      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+
     for (let habit = 0; habit < habitList.length; habit++) {
+      let completeData = habitList[habit].completionData.find(
+        (data) => data.date === dateID
+      );
+      let completeStatus = "";
+      if (completeData) {
+        completeStatus = completeData.complete;
+      }
       weekLength++;
-      if (habitList[habit].data[year][month][day].complete === "complete") {
+      if (completeStatus === "complete") {
         dayTotal++;
         weekTotal++;
         monthTotal++;
       }
     }
-    if (new Date(year, month, day + 1).getDay() === 0) {
+    if (date.getDay() === 0) {
       // Handle weekend-only weeks:
       if (weekLength / habitList.length <= 2) {
         togglePercent ? (weekTotal += 1 * habitList.length) : (weekTotal += 0);
@@ -96,6 +142,7 @@ const calcTotals = (monthView, habitList, days, togglePercent) => {
       }
       weekTotalArray.push(weekTotal);
       weekLengthArray.push(weekLength);
+      monthLength += weekLength;
       weekTotal = 0;
       weekLength = 0;
     }
@@ -106,6 +153,7 @@ const calcTotals = (monthView, habitList, days, togglePercent) => {
     weekTotalArray: weekTotalArray,
     weekLengthArray: weekLengthArray,
     monthTotal: monthTotal,
+    monthLength: monthLength,
   };
 };
 
@@ -147,21 +195,24 @@ export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
   const [togglePercent, setTogglePercent] = useState();
   const [weekCount, setWeekCount] = useState(0);
   const totals = calcTotals(monthView, habitList, days, togglePercent);
-  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var week = 0;
   return daysArray.map((day) => {
     day += 1;
+    let date = new Date(year, month, day);
+    let dateID =
+      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     return (
       <>
         <tr key={day.toString()}>
           <td className="inactiveCells">
-            {day} - {dayNames[new Date(year, month, day - 1).getDay()]}
+            {day} - {dayNames[date.getDay()]}
           </td>
-          {listCheckboxes(monthView, habitList, setHabitList, day - 1)}
+          {listCheckboxes(monthView, habitList, setHabitList, day)}
           {formatTotal(totals.dayTotalArray[day - 1], habitList.length, "day")}
         </tr>
 
-        {new Date(year, month, day).getDay() === 0 ? (
+        {date.getDay() === 0 ? (
           <tr>
             <td className="inactiveCells" colSpan={habitList.length + 1}>
               Week {(week += 1)} Total:
@@ -183,7 +234,7 @@ export const WeeklyChecklist = ({ monthView, habitList, setHabitList }) => {
             </td>
             {formatTotal(
               totals.monthTotal,
-              habitList.length * day,
+              totals.monthLength * habitList.length,
               "month",
               togglePercent,
               setTogglePercent

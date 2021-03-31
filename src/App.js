@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { getData, setData } from "./components/GetData";
 import { AddHabit } from "./components/AddHabit";
 import { HabitList } from "./components/HabitList";
 import { WeeklyChecklist } from "./components/WeeklyChecklist";
+const axios = require("axios");
 
 function App() {
   const [habitList, setHabitList] = useState([]);
@@ -25,24 +25,25 @@ function App() {
   ];
 
   useEffect(() => {
-    if (habitList.length > 0) {
-      setData(habitList);
-    } else {
-      let mounted = true;
-      getData().then((data) => {
-        if (mounted) {
-          setHabitList(data);
-        }
-      });
-      return () => (mounted = false);
+    let mounted = true;
+    if (mounted) {
+      axios
+        .get("http://localhost:5000/habits/")
+        .then((response) => {
+          setHabitList(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }, [habitList]);
+    return () => (mounted = false);
+  }, []);
 
   const handleToggle = (id) => {
     setHabitList(
       habitList.map((habit) => {
-        if (habit.id.toString() === id) {
-          habit = { ...habit, delete: !habit.delete };
+        if (habit._id.toString() === id) {
+          habit = { ...habit, deleteHabit: !habit.deleteHabit };
           return habit;
         } else {
           return { ...habit };
@@ -54,12 +55,21 @@ function App() {
   const handleDelete = () => {
     setHabitList(
       habitList.filter((habit) => {
-        return !habit.delete ? { ...habit } : null;
+        if (!habit.deleteHabit) {
+          return { ...habit };
+        } else {
+          axios
+            .delete("http://localhost:5000/habits/" + habit._id)
+            .then((response) => {
+              console.log(response.data);
+            });
+          return null;
+        }
       })
     );
   };
 
-  const handleMonthChange = async (action) => {
+  const handleMonthChange = (action) => {
     const year = monthView.getFullYear();
     const month = monthView.getMonth();
 
@@ -79,37 +89,6 @@ function App() {
       }
     }
     setMonthView(newDate);
-
-    const newYear = newDate.getFullYear();
-    const newMonth = newDate.getMonth();
-    const newDays = 32 - new Date(newYear, newMonth, 32).getDate();
-
-    const generateMonthData = () => {
-      const daysArray = [...Array(newDays).keys()];
-      const monthData = daysArray.map((day) => ({
-        day: day + 1,
-        complete: "",
-      }));
-      return monthData;
-    };
-
-    for (let habit = 0; habit < habitList.length; habit++) {
-      if (!habitList[habit].data[newYear]) {
-        await setHabitList(
-          habitList.map((habit) => {
-            habit.data[newYear] = { [newMonth]: generateMonthData() };
-            return { ...habit };
-          })
-        );
-      } else if (!habitList[habit].data[newYear][newMonth]) {
-        await setHabitList(
-          habitList.map((habit) => {
-            habit.data[newYear][newMonth] = generateMonthData();
-            return { ...habit };
-          })
-        );
-      }
-    }
   };
 
   return (
@@ -134,13 +113,10 @@ function App() {
         </div>
         <h3>
           Add a habit:
-          <AddHabit
-            monthView={monthView}
-            habitList={habitList}
-            setHabitList={setHabitList}
-          />
+          <AddHabit habitList={habitList} setHabitList={setHabitList} />
         </h3>
-        {habitList.some((habit) => habit.delete) ? (
+
+        {habitList.some((habit) => habit.deleteHabit) ? (
           <div>
             <button className="deleteButton" onClick={handleDelete}>
               Delete habit?
@@ -149,6 +125,7 @@ function App() {
         ) : (
           ""
         )}
+
         <table>
           <thead>
             <tr>

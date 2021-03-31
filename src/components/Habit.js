@@ -9,11 +9,11 @@ export const Habit = ({ habit, handleToggle }) => {
   return (
     <th
       onClick={handleClick}
-      id={habit.id}
-      key={habit.id}
+      id={habit._id}
+      key={habit._id}
       style={{ habit }}
       className={
-        habit.delete
+        habit.deleteHabit
           ? "inactiveCells + habit + strike"
           : "inactiveCells + habit"
       }
