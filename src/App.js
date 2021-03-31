@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Header } from "./components/Header";
 import { AddHabit } from "./components/AddHabit";
+import { DeleteButton } from "./components/DeleteButton";
 import { HabitList } from "./components/HabitList";
 import { WeeklyChecklist } from "./components/WeeklyChecklist";
 const axios = require("axios");
@@ -26,61 +27,18 @@ function App() {
     return () => (mounted = false);
   }, []);
 
-  const handleToggle = (id) => {
-    setHabitList(
-      habitList.map((habit) => {
-        if (habit._id.toString() === id) {
-          habit = { ...habit, deleteHabit: !habit.deleteHabit };
-          return habit;
-        } else {
-          return { ...habit };
-        }
-      })
-    );
-  };
-
-  const handleDelete = () => {
-    setHabitList(
-      habitList.filter((habit) => {
-        if (!habit.deleteHabit) {
-          return { ...habit };
-        } else {
-          axios
-            .delete("http://localhost:5000/habits/" + habit._id)
-            .then((response) => {
-              console.log(response.data);
-            });
-          return null;
-        }
-      })
-    );
-  };
-
   return (
     <div className="App">
       <div>
         <Header monthView={monthView} setMonthView={setMonthView} />
-
-        <h3>
-          Add a habit:
-          <AddHabit habitList={habitList} setHabitList={setHabitList} />
-        </h3>
-
-        {habitList.some((habit) => habit.deleteHabit) ? (
-          <div>
-            <button className="deleteButton" onClick={handleDelete}>
-              Delete habit?
-            </button>
-          </div>
-        ) : (
-          ""
-        )}
+        <AddHabit habitList={habitList} setHabitList={setHabitList} />
+        <DeleteButton habitList={habitList} setHabitList={setHabitList} />
 
         <table>
           <thead>
             <tr>
               <th className="inactiveCells"></th>
-              <HabitList habitList={habitList} handleToggle={handleToggle} />
+              <HabitList habitList={habitList} setHabitList={setHabitList} />
               <th className="inactiveCells">Total</th>
             </tr>
           </thead>

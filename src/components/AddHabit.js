@@ -24,15 +24,18 @@ export const AddHabit = ({ habitList, setHabitList }) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          value={userInput}
-          type="text"
-          placeholder=""
-          onChange={handleChange}
-        />
-      </form>
-    </div>
+    <h3>
+      Add a habit:
+      <div>
+        <form onSubmit={handleSubmit}>
+          <input
+            value={userInput}
+            type="text"
+            placeholder=""
+            onChange={handleChange}
+          />
+        </form>
+      </div>
+    </h3>
   );
 };
