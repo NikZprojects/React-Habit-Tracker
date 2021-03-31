@@ -9,7 +9,6 @@ const axios = require("axios");
 function App() {
   const [habitList, setHabitList] = useState([]);
   const [monthView, setMonthView] = useState(new Date());
-  const [loaded, setLoaded] = useState();
 
   useEffect(() => {
     let mounted = true;
