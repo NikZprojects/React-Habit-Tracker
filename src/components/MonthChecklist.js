@@ -36,11 +36,17 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
           date: dateID,
           complete: completeStatus,
         };
-        axios
-          .post("http://localhost:5000/habits/update/" + id, {
-            newData: newData,
-          })
-          .then((res) => setHabitList(res.data));
+
+        if (!habit.completionData.find((data) => data.date === newData.date)) {
+          habit.completionData.push(newData);
+        } else {
+          habit.completionData = habit.completionData.map((data) => {
+            return data.date === newData.date ? newData : data;
+          });
+        }
+        axios.post("http://localhost:5000/habits/update/" + id, {
+          newData: newData,
+        });
 
         return { ...habit };
       } else {
