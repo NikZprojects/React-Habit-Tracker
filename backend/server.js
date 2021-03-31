@@ -1,43 +1,30 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const routes = require("./sample_project/api_routes");
-const path = require("path");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-
-const host = "localhost";
 const port = process.env.PORT || 5000;
 
-// Connects to the database
-mongoose
-  .connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() =>
-    console.log(`Success! Database connected successfully from ${host}:${port}`)
-  )
-  .catch((err) => console.log(err));
+app.use(cors());
+app.use(express.json());
 
-mongoose.Promise = global.Promise;
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+const uri = process.env.HABIT_DB;
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
 });
 
-app.use(bodyParser.json());
-
-app.use("/api", routes);
-
-app.use((err, req, res, next) => {
-  console.log(err);
-  next();
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("MongoDB database connection established successfully");
 });
+
+const habitsRouter = require("./routes/habits");
+
+app.use("/habits", habitsRouter);
 
 app.listen(port, () => {
-  console.log(`Connecting to cloud server...`);
+  console.log(`Server is running on port: ${port}`);
 });

@@ -6,7 +6,7 @@ export const HabitList = ({ habitList, handleToggle }) => {
     <>
       {habitList.map((habit) => {
         return (
-          <Habit key={habit.id} handleToggle={handleToggle} habit={habit} />
+          <Habit key={habit._id} handleToggle={handleToggle} habit={habit} />
         );
       })}
     </>
