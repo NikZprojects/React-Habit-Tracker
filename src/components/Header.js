@@ -1,4 +1,5 @@
 import React from "react";
+const keys = require("../oauth2keys.json");
 
 const months = [
   "January",
@@ -37,20 +38,45 @@ const handleMonthChange = (action, monthView, setMonthView) => {
   setMonthView(newDate);
 };
 
-export const Header = ({ monthView, setMonthView }) => (
-  <div className="gridContainer">
-    <button
-      className="setPrevMonth"
-      onClick={() => handleMonthChange("previous", monthView, setMonthView)}
-    >
-      ❮
-    </button>
-    <h1>{months[monthView.getMonth()] + " " + monthView.getFullYear()}</h1>
-    <button
-      className="setNextMonth"
-      onClick={() => handleMonthChange("next", monthView, setMonthView)}
-    >
-      ❯
-    </button>
-  </div>
+const signOut = () => {
+  const params = {
+    client_id: keys.web.client_id,
+  };
+  window.gapi.auth2.init(params).then((GoogleAuth) => {
+    GoogleAuth.signOut();
+  });
+};
+
+export const Header = ({ setLoggedIn, monthView, setMonthView }) => (
+  <>
+    <div className="gridContainer">
+      <div></div>
+      <div></div>
+      <button
+        className="buttonLink"
+        onClick={() => {
+          signOut();
+          window.location.reload();
+        }}
+      >
+        Sign out
+      </button>
+    </div>
+
+    <div className="gridContainer">
+      <button
+        className="setPrevMonth"
+        onClick={() => handleMonthChange("previous", monthView, setMonthView)}
+      >
+        ❮
+      </button>
+      <h1>{months[monthView.getMonth()] + " " + monthView.getFullYear()}</h1>
+      <button
+        className="setNextMonth"
+        onClick={() => handleMonthChange("next", monthView, setMonthView)}
+      >
+        ❯
+      </button>
+    </div>
+  </>
 );

@@ -47,25 +47,28 @@ router.route("/update/:id").post((req, res) => {
       if (typeof req.body.deleteHabit === "boolean") {
         habit.deleteHabit = req.body.deleteHabit;
       }
-      var updated = false;
+
       if (req.body.newData) {
         if (
-          !habit.completionData.find(
+          habit.completionData.find(
             (data) => data.date === req.body.newData.date
           )
         ) {
-          habit.completionData.push(req.body.newData);
-        } else {
           habit.completionData = habit.completionData.map((data) => {
             return data.date === req.body.newData.date
               ? req.body.newData
               : data;
           });
+        } else {
+          habit.completionData.push(req.body.newData);
         }
       } else {
         habit.completionData = habit.completionData;
       }
       habit.save();
+      Habit.find()
+        .then((habits) => res.json(habits))
+        .catch((err) => res.status(400).json("Error: " + err));
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });

@@ -36,7 +36,14 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
           date: dateID,
           complete: completeStatus,
         };
+        axios
+          .post("http://localhost:5000/habits/update/" + id, {
+            newData: newData,
+          })
 
+          .catch(function (error) {
+            console.log(error);
+          });
         if (!habit.completionData.find((data) => data.date === newData.date)) {
           habit.completionData.push(newData);
         } else {
@@ -44,9 +51,6 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
             return data.date === newData.date ? newData : data;
           });
         }
-        axios.post("http://localhost:5000/habits/update/" + id, {
-          newData: newData,
-        });
 
         return { ...habit };
       } else {
