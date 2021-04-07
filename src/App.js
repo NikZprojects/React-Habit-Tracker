@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import { LogIn } from "./components/LogIn";
 import { Header } from "./components/Header";
 import { AddHabit } from "./components/AddHabit";
 import { DeleteButton } from "./components/DeleteButton";
@@ -9,6 +10,7 @@ const axios = require("axios");
 function App() {
   const [habitList, setHabitList] = useState([]);
   const [monthView, setMonthView] = useState(new Date());
+  const [loggedIn, setLoggedIn] = useState();
 
   useEffect(() => {
     let mounted = true;
@@ -27,14 +29,25 @@ function App() {
 
   return (
     <div className="App">
-      <Header monthView={monthView} setMonthView={setMonthView} />
-      <AddHabit habitList={habitList} setHabitList={setHabitList} />
-      <DeleteButton habitList={habitList} setHabitList={setHabitList} />
-      <HabitTable
-        monthView={monthView}
-        habitList={habitList}
-        setHabitList={setHabitList}
-      />
+      {!loggedIn ? (
+        <LogIn setLoggedIn={setLoggedIn} />
+      ) : (
+        <>
+          <Header
+            LoggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+            monthView={monthView}
+            setMonthView={setMonthView}
+          />
+          <AddHabit habitList={habitList} setHabitList={setHabitList} />
+          <DeleteButton habitList={habitList} setHabitList={setHabitList} />
+          <HabitTable
+            monthView={monthView}
+            habitList={habitList}
+            setHabitList={setHabitList}
+          />
+        </>
+      )}
     </div>
   );
 }
