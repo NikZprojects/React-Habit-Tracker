@@ -1,10 +1,17 @@
 import React from "react";
+const axios = require("axios");
 
 export const LogIn = ({ setLoggedIn }) => {
   function onSuccess(googleUser) {
-    console.log("Logged in as: " + googleUser.getBasicProfile().getName());
+    //console.log(googleUser.getBasicProfile());
     setLoggedIn(true);
+    var id_token = { id_token: googleUser.getAuthResponse().id_token };
+
+    axios
+      .post("https://localhost:5000/tokensignin", id_token)
+      .then((res) => console.log(res));
   }
+
   function onFailure(error) {
     console.log(error);
   }
