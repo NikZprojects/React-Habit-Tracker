@@ -9,7 +9,7 @@ export const LogIn = ({ setLoggedIn }) => {
 
     axios
       .post("https://localhost:5000/tokensignin", id_token)
-      .then((res) => console.log(res));
+      .then((res) => console.log("logged in as: " + res.data));
   }
 
   function onFailure(error) {

@@ -5,7 +5,6 @@ const keys = require("../oauth2keys_copy.json").web;
 
 router.route("/").post((req, res) => {
   const token = req.body.id_token;
-  console.log(token);
   const client = new OAuth2Client(keys.client_id);
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -14,6 +13,9 @@ router.route("/").post((req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload["sub"];
+    const email = payload["email"];
+
+    res.json(payload.name);
   }
   verify().catch(console.error);
 });
