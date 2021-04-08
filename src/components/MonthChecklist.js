@@ -37,7 +37,7 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
           complete: completeStatus,
         };
         axios
-          .post("http://localhost:5000/habits/update/" + id, {
+          .post("https://localhost:5000/habits/update/" + id, {
             newData: newData,
           })
 

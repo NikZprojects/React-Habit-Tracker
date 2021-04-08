@@ -16,7 +16,7 @@ function App() {
     let mounted = true;
     if (mounted) {
       axios
-        .get("http://localhost:5000/habits/")
+        .get("https://localhost:5000/habits/")
         .then((response) => {
           setHabitList(response.data);
         })

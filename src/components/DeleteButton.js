@@ -7,7 +7,7 @@ const handleDelete = (habitList, setHabitList) => {
       if (!habit.deleteHabit) {
         return { ...habit };
       } else {
-        axios.delete("http://localhost:5000/habits/" + habit._id);
+        axios.delete("https://localhost:5000/habits/" + habit._id);
         return null;
       }
     })
