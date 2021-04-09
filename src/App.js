@@ -10,7 +10,7 @@ const axios = require("axios");
 function App() {
   const [habitList, setHabitList] = useState([]);
   const [monthView, setMonthView] = useState(new Date());
-  const [loggedIn, setLoggedIn] = useState();
+  const [userID, setUserID] = useState();
 
   useEffect(() => {
     let mounted = true;
@@ -29,13 +29,13 @@ function App() {
 
   return (
     <div className="App">
-      {!loggedIn ? (
-        <LogIn setLoggedIn={setLoggedIn} />
+      {!userID ? (
+        <LogIn setUserID={setUserID} />
       ) : (
         <>
           <Header
-            LoggedIn={loggedIn}
-            setLoggedIn={setLoggedIn}
+            userID={userID}
+            setUserID={setUserID}
             monthView={monthView}
             setMonthView={setMonthView}
           />
