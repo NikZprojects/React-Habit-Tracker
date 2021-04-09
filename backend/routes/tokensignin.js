@@ -1,4 +1,5 @@
 const router = require("express").Router();
+let User = require("../models/user.model");
 
 const { OAuth2Client } = require("google-auth-library");
 const keys = require("../oauth2keys_copy.json").web;
@@ -13,9 +14,29 @@ router.route("/").post((req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload["sub"];
-    const email = payload["email"];
+    User.find().then((users) => {
+      let user = users.find((user) => user.userid === userid);
+      if (user) {
+        res.json(user);
+      } else {
+        const name = payload["name"];
+        const email = payload["email"];
+        const picture = payload["picture"];
+        const habitData = userid;
 
-    res.json(payload.name);
+        const newUser = new User({
+          userid,
+          name,
+          email,
+          picture,
+          habitData,
+        });
+
+        newUser.save().then((user) => {
+          res.json(user);
+        });
+      }
+    });
   }
   verify().catch(console.error);
 });

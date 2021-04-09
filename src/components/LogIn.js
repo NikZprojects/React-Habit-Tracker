@@ -6,10 +6,11 @@ export const LogIn = ({ setLoggedIn }) => {
     //console.log(googleUser.getBasicProfile());
     setLoggedIn(true);
     var id_token = { id_token: googleUser.getAuthResponse().id_token };
+    console.log("test");
 
     axios
       .post("https://localhost:5000/tokensignin", id_token)
-      .then((res) => console.log("logged in as: " + res.data));
+      .then((res) => console.log(res.data));
   }
 
   function onFailure(error) {
