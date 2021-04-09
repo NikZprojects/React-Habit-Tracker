@@ -1,16 +1,13 @@
 import React from "react";
 const axios = require("axios");
 
-export const LogIn = ({ setLoggedIn }) => {
+export const LogIn = ({ setUserID }) => {
   function onSuccess(googleUser) {
-    //console.log(googleUser.getBasicProfile());
-    setLoggedIn(true);
     var id_token = { id_token: googleUser.getAuthResponse().id_token };
-    console.log("test");
 
     axios
       .post("https://localhost:5000/tokensignin", id_token)
-      .then((res) => console.log(res.data));
+      .then((res) => setUserID(res.data));
   }
 
   function onFailure(error) {
@@ -40,7 +37,7 @@ export const LogIn = ({ setLoggedIn }) => {
         </center>
 
         <br></br>
-        <button className="buttonLink" onClick={() => setLoggedIn(true)}>
+        <button className="buttonLink" onClick={() => setUserID("guest")}>
           ...or try it out as a guest
         </button>
       </div>

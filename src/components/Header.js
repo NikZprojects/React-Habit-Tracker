@@ -47,7 +47,7 @@ const signOut = () => {
   });
 };
 
-export const Header = ({ setLoggedIn, monthView, setMonthView }) => (
+export const Header = ({ userID, setuserID, monthView, setMonthView }) => (
   <>
     <div className="gridContainer">
       <div></div>
