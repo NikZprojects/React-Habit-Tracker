@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     let mounted = true;
-    if (mounted && user) {
+    if (mounted && user && user !== "guest") {
       axios
         .get("https://localhost:5000/habits/" + user.habitDataID)
         .then((response) => {

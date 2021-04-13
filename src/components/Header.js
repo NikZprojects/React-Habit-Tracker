@@ -59,7 +59,7 @@ export const Header = ({ user, setUser, monthView, setMonthView }) => (
           window.location.reload();
         }}
       >
-        Sign out
+        {user === "guest" ? "Sign in" : "Sign out"}
       </button>
     </div>
     <div className="gridContainer">

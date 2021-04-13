@@ -2,17 +2,28 @@ import React from "react";
 const axios = require("axios");
 
 const handleDelete = (user, habitList, setHabitList) => {
-  const deleteHabitIDs = [];
-  for (let habit = 0; habit < habitList.length; habit++) {
-    if (habitList[habit].deleteHabit) {
-      deleteHabitIDs.push(habitList[habit]._id);
-    }
-    if (habit === habitList.length - 1) {
-      axios
-        .post("https://localhost:5000/habits/" + user.habitDataID + "/delete", {
-          deleteHabitIDs: deleteHabitIDs,
-        })
-        .then((res) => setHabitList(res.data));
+  if (user === "guest") {
+    setHabitList(
+      habitList.filter((habit) => {
+        return !habit.deleteHabit ? { ...habit } : null;
+      })
+    );
+  } else {
+    const deleteHabitIDs = [];
+    for (let habit = 0; habit < habitList.length; habit++) {
+      if (habitList[habit].deleteHabit) {
+        deleteHabitIDs.push(habitList[habit]._id);
+      }
+      if (habit === habitList.length - 1) {
+        axios
+          .post(
+            "https://localhost:5000/habits/" + user.habitDataID + "/delete",
+            {
+              deleteHabitIDs: deleteHabitIDs,
+            }
+          )
+          .then((res) => setHabitList(res.data));
+      }
     }
   }
 };
