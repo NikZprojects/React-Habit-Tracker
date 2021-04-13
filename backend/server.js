@@ -1,6 +1,6 @@
 const fs = require("fs");
 const express = require("express");
-const https = require("https");
+//const https = require("https");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
@@ -32,8 +32,9 @@ const habitsRouter = require("./routes/habits");
 app.use("/tokensignin", tokenSignInRouter);
 app.use("/habits", habitsRouter);
 
-const server = https.createServer({ key: key, cert: cert }, app);
+// for https in development:
+// const server = https.createServer({ key: key, cert: cert }, app);
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
