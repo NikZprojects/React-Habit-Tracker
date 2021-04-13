@@ -7,7 +7,7 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   picture: { type: String, required: false },
-  habitData: { type: String, required: true },
+  habitDataID: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);

@@ -13,7 +13,7 @@ const handleToggle = (id, habitList, setHabitList) => {
   );
 };
 
-export const Habit = ({ habit, habitList, setHabitList }) => {
+export const Habit = ({ user, habit, habitList, setHabitList }) => {
   const handleClick = (e) => {
     e.preventDefault();
     handleToggle(e.target.id, habitList, setHabitList);

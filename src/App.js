@@ -10,11 +10,20 @@ const axios = require("axios");
 function App() {
   const [habitList, setHabitList] = useState([]);
   const [monthView, setMonthView] = useState(new Date());
-  const [userID, setUserID] = useState();
+  const [user, setUser] = useState();
 
   useEffect(() => {
     let mounted = true;
-    if (mounted) {
+    if (mounted && user) {
+      axios
+        .get("https://localhost:5000/habits/" + user.habitDataID)
+        .then((response) => {
+          setHabitList(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else if (mounted && !user) {
       axios
         .get("https://localhost:5000/habits/")
         .then((response) => {
@@ -25,23 +34,32 @@ function App() {
         });
     }
     return () => (mounted = false);
-  }, []);
+  }, [user]);
 
   return (
     <div className="App">
-      {!userID ? (
-        <LogIn setUserID={setUserID} />
+      {!user ? (
+        <LogIn setUser={setUser} />
       ) : (
         <>
           <Header
-            userID={userID}
-            setUserID={setUserID}
+            user={user}
+            setUser={setUser}
             monthView={monthView}
             setMonthView={setMonthView}
           />
-          <AddHabit habitList={habitList} setHabitList={setHabitList} />
-          <DeleteButton habitList={habitList} setHabitList={setHabitList} />
+          <AddHabit
+            user={user}
+            habitList={habitList}
+            setHabitList={setHabitList}
+          />
+          <DeleteButton
+            user={user}
+            habitList={habitList}
+            setHabitList={setHabitList}
+          />
           <HabitTable
+            user={user}
             monthView={monthView}
             habitList={habitList}
             setHabitList={setHabitList}

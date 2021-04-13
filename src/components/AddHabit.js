@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 const axios = require("axios");
 
-export const AddHabit = ({ habitList, setHabitList }) => {
+export const AddHabit = ({ user, habitList, setHabitList }) => {
   const [userInput, setUserInput] = useState("");
 
   const handleChange = (e) => {
@@ -18,7 +18,10 @@ export const AddHabit = ({ habitList, setHabitList }) => {
     };
 
     axios
-      .post("https://localhost:5000/habits/add", newHabit)
+      .post(
+        "https://localhost:5000/habits/" + user.habitDataID + "/add",
+        newHabit
+      )
       .then((res) => setHabitList(res.data));
     setUserInput("");
   };

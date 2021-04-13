@@ -2,7 +2,7 @@ import React, { useState } from "react";
 const axios = require("axios");
 const { v4: uuid } = require("uuid");
 
-const handleChange = (monthView, id, day, habitList, setHabitList) => {
+const handleChange = (user, monthView, id, day, habitList, setHabitList) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
   let date = new Date(year, month, day);
@@ -37,9 +37,15 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
           complete: completeStatus,
         };
         axios
-          .post("https://localhost:5000/habits/update/" + id, {
-            newData: newData,
-          })
+          .post(
+            "https://localhost:5000/habits/" +
+              user.habitDataID +
+              "/update/" +
+              id,
+            {
+              newData: newData,
+            }
+          )
 
           .catch(function (error) {
             console.log(error);
@@ -60,7 +66,7 @@ const handleChange = (monthView, id, day, habitList, setHabitList) => {
   );
 };
 
-const listCheckboxes = (monthView, habitList, setHabitList, day) => {
+const listCheckboxes = (user, monthView, habitList, setHabitList, day) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
   let date = new Date(year, month, day);
@@ -99,7 +105,7 @@ const listCheckboxes = (monthView, habitList, setHabitList, day) => {
         className={`${completeStatus} + hoverable`}
         key={habit._id + "." + day}
         onClick={() =>
-          handleChange(monthView, habit._id, day, habitList, setHabitList)
+          handleChange(user, monthView, habit._id, day, habitList, setHabitList)
         }
       >
         {chooseSymbol(completeStatus)}
@@ -197,7 +203,12 @@ const formatTotal = (total, maximum, type, togglePercent, setTogglePercent) => {
   );
 };
 
-export const MonthChecklist = ({ monthView, habitList, setHabitList }) => {
+export const MonthChecklist = ({
+  user,
+  monthView,
+  habitList,
+  setHabitList,
+}) => {
   const year = monthView.getFullYear();
   const month = monthView.getMonth();
   const days = 32 - new Date(year, month, 32).getDate();
@@ -216,7 +227,7 @@ export const MonthChecklist = ({ monthView, habitList, setHabitList }) => {
           <td className="inactiveCells">
             {day} - {dayNames[date.getDay()]}
           </td>
-          {listCheckboxes(monthView, habitList, setHabitList, day)}
+          {listCheckboxes(user, monthView, habitList, setHabitList, day)}
           {formatTotal(totals.dayTotalArray[day - 1], habitList.length, "day")}
         </tr>
 

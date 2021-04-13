@@ -47,7 +47,7 @@ const signOut = () => {
   });
 };
 
-export const Header = ({ userID, setuserID, monthView, setMonthView }) => (
+export const Header = ({ user, setUser, monthView, setMonthView }) => (
   <>
     <div className="gridContainer">
       <div></div>
@@ -62,7 +62,6 @@ export const Header = ({ userID, setuserID, monthView, setMonthView }) => (
         Sign out
       </button>
     </div>
-
     <div className="gridContainer">
       <button
         className="setPrevMonth"

@@ -1,26 +1,29 @@
 import React from "react";
 const axios = require("axios");
 
-const handleDelete = (habitList, setHabitList) => {
-  setHabitList(
-    habitList.filter((habit) => {
-      if (!habit.deleteHabit) {
-        return { ...habit };
-      } else {
-        axios.delete("https://localhost:5000/habits/" + habit._id);
-        return null;
-      }
-    })
-  );
+const handleDelete = (user, habitList, setHabitList) => {
+  const deleteHabitIDs = [];
+  for (let habit = 0; habit < habitList.length; habit++) {
+    if (habitList[habit].deleteHabit) {
+      deleteHabitIDs.push(habitList[habit]._id);
+    }
+    if (habit === habitList.length - 1) {
+      axios
+        .post("https://localhost:5000/habits/" + user.habitDataID + "/delete", {
+          deleteHabitIDs: deleteHabitIDs,
+        })
+        .then((res) => setHabitList(res.data));
+    }
+  }
 };
 
-export const DeleteButton = ({ habitList, setHabitList }) => {
+export const DeleteButton = ({ user, habitList, setHabitList }) => {
   if (habitList.some((habit) => habit.deleteHabit)) {
     return (
       <div>
         <button
           className="deleteButton"
-          onClick={() => handleDelete(habitList, setHabitList)}
+          onClick={() => handleDelete(user, habitList, setHabitList)}
         >
           Delete habit?
         </button>
