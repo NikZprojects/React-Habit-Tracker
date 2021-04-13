@@ -39,7 +39,7 @@ const handleChange = (user, monthView, id, day, habitList, setHabitList) => {
         if (user !== "guest") {
           axios
             .post(
-              "https://localhost:5000/habits/" +
+              "https://nikzprojects.com/apis/habits/" +
                 user.habitDataID +
                 "/update/" +
                 id,
