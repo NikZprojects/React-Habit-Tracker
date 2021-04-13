@@ -5,9 +5,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-const cert = fs.readFileSync("../localhost.pem");
-const key = fs.readFileSync("../localhost-key.pem");
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -33,6 +30,8 @@ app.use("/tokensignin", tokenSignInRouter);
 app.use("/habits", habitsRouter);
 
 // for https in development:
+// const cert = fs.readFileSync("../localhost.pem");
+// const key = fs.readFileSync("../localhost-key.pem");
 // const server = https.createServer({ key: key, cert: cert }, app);
 
 app.listen(port, () => {
