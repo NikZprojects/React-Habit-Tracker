@@ -1,5 +1,7 @@
 const router = require("express").Router();
 let User = require("../models/user.model");
+let UserHabits = require("../models/userHabits.model");
+let Habit = require("../models/habit.model");
 
 const { OAuth2Client } = require("google-auth-library");
 const keys = require("../oauth2keys_copy.json").web;
@@ -19,21 +21,35 @@ router.route("/").post((req, res) => {
       if (user) {
         res.json(user);
       } else {
-        const name = payload["name"];
-        const email = payload["email"];
-        const picture = payload["picture"];
-        const habitData = userid;
+        const habits = [
+          new Habit({
+            name: "Click to Delete",
+            deleteHabit: false,
+            completionData: [],
+          }),
+        ];
 
-        const newUser = new User({
+        const newUserHabits = new UserHabits({
           userid,
-          name,
-          email,
-          picture,
-          habitData,
+          habits,
         });
 
-        newUser.save().then((user) => {
-          res.json(user);
+        newUserHabits.save().then((userHabits) => {
+          const name = payload["name"];
+          const email = payload["email"];
+          const picture = payload["picture"];
+          const habitDataID = userHabits._id;
+
+          const newUser = new User({
+            userid,
+            name,
+            email,
+            picture,
+            habitDataID,
+          });
+          newUser.save().then((user) => {
+            res.json(user);
+          });
         });
       }
     });
