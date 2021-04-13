@@ -13,7 +13,7 @@ router.route("/").get((req, res) => {
   res.json([
     {
       _id: "001",
-      name: "Example habit",
+      name: "Example Habit (Click to Delete)",
       deleteHabit: false,
       completionData: [],
     },

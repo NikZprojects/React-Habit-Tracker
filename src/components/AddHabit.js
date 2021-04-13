@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 const axios = require("axios");
+const { v4: uuid } = require("uuid");
 
 export const AddHabit = ({ user, habitList, setHabitList }) => {
   const [userInput, setUserInput] = useState("");
@@ -17,12 +18,17 @@ export const AddHabit = ({ user, habitList, setHabitList }) => {
       completionData: [],
     };
 
-    axios
-      .post(
-        "https://localhost:5000/habits/" + user.habitDataID + "/add",
-        newHabit
-      )
-      .then((res) => setHabitList(res.data));
+    if (user === "guest") {
+      newHabit._id = uuid();
+      setHabitList([...habitList, newHabit]);
+    } else {
+      axios
+        .post(
+          "https://localhost:5000/habits/" + user.habitDataID + "/add",
+          newHabit
+        )
+        .then((res) => setHabitList(res.data));
+    }
     setUserInput("");
   };
 
