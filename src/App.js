@@ -16,7 +16,7 @@ function App() {
     let mounted = true;
     if (mounted && user && user !== "guest") {
       axios
-        .get("https://nikzprojects.com/apis/habits/" + user.habitDataID)
+        .get("https://www.nikzprojects.com/apis/habits/" + user.habitDataID)
         .then((response) => {
           setHabitList(response.data);
         })
@@ -25,7 +25,7 @@ function App() {
         });
     } else if (mounted && !user) {
       axios
-        .get("https://nikzprojects.com/apis/habits/")
+        .get("https://www.nikzprojects.com/apis/habits/")
         .then((response) => {
           setHabitList(response.data);
         })

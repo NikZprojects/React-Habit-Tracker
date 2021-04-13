@@ -6,7 +6,7 @@ export const LogIn = ({ setUser }) => {
     var id_token = { id_token: googleUser.getAuthResponse().id_token };
 
     axios
-      .post("https://nikzprojects.com/apis/tokensignin", id_token)
+      .post("https://www.nikzprojects.com/apis/tokensignin", id_token)
       .then((res) => setUser(res.data));
   }
 

@@ -17,7 +17,9 @@ const handleDelete = (user, habitList, setHabitList) => {
       if (habit === habitList.length - 1) {
         axios
           .post(
-            "https://localhost:5000/habits/" + user.habitDataID + "/delete",
+            "https://www.nikzprojects.com/apis/habits/" +
+              user.habitDataID +
+              "/delete",
             {
               deleteHabitIDs: deleteHabitIDs,
             }
